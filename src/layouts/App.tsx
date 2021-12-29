@@ -1,11 +1,20 @@
 import { useState } from 'react'
+import { Button, Divider } from "antd"
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <div className="app">
-      <p>
+      <div>
+        <Button type="primary">Primary Button</Button>
+        <Button>Default Button</Button>
+        <Button type="dashed">Dashed Button</Button>
+        <Divider />
+        <Divider />
+        <Divider />
+        <Button type="text">Text Button</Button>
+        <Button type="link">Link Button</Button>
         <button
           type="button"
           onClick={
@@ -14,7 +23,7 @@ function App() {
         >
           count is: {count}
         </button>
-      </p>
+      </div>
     </div>
   )
 }
