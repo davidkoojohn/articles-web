@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState } from "react"
 import { Button, Divider } from "antd"
 
-function App() {
+function App () {
   const [count, setCount] = useState(0)
-
+  console.log(count)
   return (
     <div className="app">
       <div>
@@ -18,7 +18,7 @@ function App() {
         <button
           type="button"
           onClick={
-            () => setCount((count) => count + 1)
+            () => setCount(count + 1)
           }
         >
           count is: {count}
