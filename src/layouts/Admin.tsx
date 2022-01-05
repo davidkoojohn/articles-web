@@ -1,5 +1,5 @@
 import React, {ReactNode, useState} from "react"
-import { Outlet, useNavigate, Link } from "react-router-dom"
+import { Outlet, useLocation, Link } from "react-router-dom"
 import { Layout, Menu } from 'antd';
 import {
   MenuUnfoldOutlined,
@@ -12,30 +12,51 @@ const { Header, Sider, Content } = Layout;
 import "./Admin.less"
 import logo from "../assets/logo.svg"
 
-const PATH = [
+interface IPath {
+  path: string
+  title: string
+  icon: ReactNode
+  activePattern: RegExp
+}
+
+const PATH: IPath[] = [
   {
     path: "/admin",
+    activePattern: new RegExp("^/admin$"),
     title: "Home",
-    icon: <AppstoreOutlined />
+    icon: <BarsOutlined />
   },
   {
     path: "/admin/article",
+    activePattern: new RegExp("^/admin/article"),
     title: "Article",
     icon: <AppstoreOutlined />
   },
   {
     path: "/admin/about",
+    activePattern: new RegExp("^/admin/about$"),
     title: "About",
-    icon: <AppstoreOutlined />
+    icon: <InfoCircleOutlined />
   }
-] as {
-  path: string
-  title: string
-  icon: ReactNode
-}[]
+]
 
 export default function Admin() {
   const [collapsed, setCollapsed] = useState<boolean>(false)
+  const location = useLocation()
+
+  const menuItems = PATH.map((it, index) => (
+    <Menu.Item
+      className={ it.activePattern.test(location.pathname) ? "ant-menu-item-selected" : "" }
+      key={index}
+      icon={it.icon}
+    >
+      <Link
+        to={it.path}
+      >
+        { it.title }
+      </Link>
+    </Menu.Item>
+  ))
 
   return (
     <Layout>
@@ -46,13 +67,9 @@ export default function Admin() {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["0"]}
+          selectable={false}
         >
-          {PATH.map((it, index) => (
-            <Menu.Item key={index} icon={it.icon}>
-              <Link to={it.path}>{ it.title }</Link>
-            </Menu.Item>
-          ))}
+          {menuItems}
         </Menu>
       </Sider>
       <Layout className="site-layout">
