@@ -1,9 +1,11 @@
 import { useState, Key } from "react";
 import { Table, Space, Button, Tag } from "antd"
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import "./Article.less"
 
 interface IDataType {
   id: string
+  key: string
   title: string
   tags: string[]
   author: string
@@ -13,10 +15,11 @@ interface IDataType {
 const dataSource: IDataType[] = [
   {
     id: "1",
+    key: "1",
     title: "胡彦斌西湖区湖底公园1号",
     tags: ["西湖区", "湖底", "公园1号"],
     author: "koo",
-    created_at: "2022-01-02"
+    created_at: "2022-01-02 12:32:21",
   },
 ];
 
@@ -38,7 +41,7 @@ const columns = [
     title: "标签",
     dataIndex: "tags",
     key: "tags",
-    width: 200,
+    width: 160,
     render: (tags: string[]) => {
       return <>
         {tags.map((tag, index) => {
@@ -47,7 +50,7 @@ const columns = [
             color = 'volcano';
           }
           return (
-            <Tag color={color} key={tag}>{tag}</Tag>
+            <Tag color={color} key={tag.charCodeAt(0)}>{tag}</Tag>
           );
         })}
       </>
@@ -65,18 +68,19 @@ const columns = [
     title: "发布时间",
     dataIndex: "created_at",
     key: "created_at",
-    width: 200,
+    width: 150,
   },
   {
-    title: 'Action',
+    align: "center",
+    title: '操作',
     key: 'action',
-    width: 150,
+    width: 130,
     render: (row: IDataType) => {
       return (
         <Space size="middle">
-          <Button type={"link"} shape={"round"} size={"small"}>查看</Button>
-          <Button type={"primary"} shape={"circle"} size={"small"}>编</Button>
-          <Button danger={true} shape={"circle"} size={"small"}>删</Button>
+          <Button type={"ghost"} shape={"circle"} size={"small"} icon={<EyeOutlined/>}/>
+          <Button type={"primary"} shape={"circle"} size={"small"} icon={<EditOutlined/>}/>
+          <Button danger={true} shape={"circle"} size={"small"} icon={<DeleteOutlined/>}/>
         </Space>
       )
     },
