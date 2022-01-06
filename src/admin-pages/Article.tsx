@@ -1,5 +1,5 @@
 import { CSSProperties } from "react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import { PageHeader, Button } from "antd"
 
 import wbb from "@/assets/wbb.jpeg"
@@ -12,6 +12,8 @@ const styled: Record<string, CSSProperties> = {
 }
 
 export default function Article() {
+  const navigate = useNavigate()
+
   return (
     <>
       <PageHeader
@@ -20,7 +22,7 @@ export default function Article() {
         title="文章管理"
         subTitle="This is a subtitle"
         extra={
-          <Button>新建文章</Button>
+          <Button onClick={() => navigate("/admin/article/new")}>新建文章</Button>
         }
       />
       <Outlet/>
