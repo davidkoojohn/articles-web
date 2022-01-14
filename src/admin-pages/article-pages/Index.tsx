@@ -3,26 +3,9 @@ import {Link, useNavigate} from "react-router-dom"
 import { Table, Space, Button, Tag, TableColumnsType } from "antd"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import "./Article.less"
-
-interface IDataType {
-  id: string
-  key: string
-  title: string
-  tags: string[]
-  author: string
-  created_at: string
-}
-
-const dataSource: IDataType[] = [
-  {
-    id: "1",
-    key: "1",
-    title: "胡彦斌西湖区湖底公园1号",
-    tags: ["西湖区", "湖底", "公园1号"],
-    author: "koo",
-    created_at: "2022-01-02 12:32:21",
-  },
-];
+import { connect, ConnectedProps } from "react-redux"
+import { RootState } from "../../reducers"
+import { IArticle } from "../../types/articleTypes"
 
 
 interface IOperationProps {
@@ -53,7 +36,7 @@ function Operation({ id }: IOperationProps) {
   )
 }
 
-const columns: TableColumnsType<IDataType> = [
+const columns: TableColumnsType<IArticle> = [
   {
     title: "#",
     dataIndex: "id",
@@ -105,7 +88,7 @@ const columns: TableColumnsType<IDataType> = [
     title: '操作',
     key: 'action',
     width: 130,
-    render: (row: IDataType) => {
+    render: (row: IArticle) => {
       return (
         <Operation id={row.id}/>
       )
@@ -113,8 +96,19 @@ const columns: TableColumnsType<IDataType> = [
   },
 ];
 
-export default function ArticleIndex() {
+const connectArticleIndex = connect(
+  (state: RootState) => {
+    const { articles } = state.articleReducer
+    return { articles }
+  },
+)
+type TArticlePropsFromRedux = ConnectedProps<typeof connectArticleIndex>
+type TArticleProps = TArticlePropsFromRedux & {
+
+}
+const Article = connectArticleIndex(({ articles }: TArticleProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dataSource = articles.map((item: IArticle) => ({ ...item, key: item.id }))
 
   return (
     <Table
@@ -124,11 +118,17 @@ export default function ArticleIndex() {
       columns={columns}
       rowSelection={{
         type: "checkbox",
-        onChange: (selectedRowKeys: Key[], selectedRows: IDataType[]) => {
+        onChange: (selectedRowKeys: Key[], selectedRows: IArticle[]) => {
           console.log(selectedRowKeys, selectedRows)
         }
       }}
       pagination={{ position: ["bottomCenter"] }}
     />
   )
+})
+
+export default function ArticleIndex() {
+  return <>
+    <Article />
+  </>
 }
