@@ -1,5 +1,6 @@
 import { useState, Key } from "react";
-import { Table, Space, Button, Tag } from "antd"
+import {Link, useNavigate} from "react-router-dom"
+import { Table, Space, Button, Tag, TableColumnsType } from "antd"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import "./Article.less"
 
@@ -23,7 +24,36 @@ const dataSource: IDataType[] = [
   },
 ];
 
-const columns = [
+
+interface IOperationProps {
+  id: string
+}
+function Operation({ id }: IOperationProps) {
+  const navigate = useNavigate()
+  return (
+    <Space size="middle">
+      <Link to={`/admin/article/${id}`}>
+        <Button type={"ghost"} shape={"circle"} size={"small"} icon={<EyeOutlined/>}/>
+      </Link>
+      <Link to={`/admin/article/${id}/edit`}>
+        <Button type={"primary"} shape={"circle"} size={"small"} icon={<EditOutlined/>}/>
+      </Link>
+      <Button
+        danger={true}
+        shape={"circle"}
+        size={"small"}
+        icon={<DeleteOutlined/>}
+        onClick={
+          () => {
+            console.log("delete", id)
+          }
+        }
+      />
+    </Space>
+  )
+}
+
+const columns: TableColumnsType<IDataType> = [
   {
     title: "#",
     dataIndex: "id",
@@ -77,11 +107,7 @@ const columns = [
     width: 130,
     render: (row: IDataType) => {
       return (
-        <Space size="middle">
-          <Button type={"ghost"} shape={"circle"} size={"small"} icon={<EyeOutlined/>}/>
-          <Button type={"primary"} shape={"circle"} size={"small"} icon={<EditOutlined/>}/>
-          <Button danger={true} shape={"circle"} size={"small"} icon={<DeleteOutlined/>}/>
-        </Space>
+        <Operation id={row.id}/>
       )
     },
   },
