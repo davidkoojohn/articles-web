@@ -13,12 +13,9 @@ export default function articleReducer(state = initialState, action: IArticleAct
     case "SET_ARTICLES":
       return {
         ...state,
-        articleList: action.items.map((item: IArticleItem) => ({ ...item, key: item.id }))
+        articleList: action.items
       }
     default:
-      return {
-        ...state,
-        articleList: state.articleList.map((item: IArticleItem) => ({ ...item, key: item.id }))
-      }
+      return state
   }
 }

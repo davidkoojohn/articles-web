@@ -1,6 +1,7 @@
 import { useState, Key, useEffect } from "react";
 import { Link } from "react-router-dom"
-import { Table, Space, Button, Tag, TableColumnsType, message } from "antd"
+import { Table, Space, Button, Tag, message } from "antd"
+import { ColumnsType } from "antd/es/table"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import "./Article.less"
 import { connect, ConnectedProps } from "react-redux"
@@ -35,7 +36,7 @@ function Operation({ id }: IOperationProps) {
   )
 }
 
-const columns: TableColumnsType<IArticleItem> = [
+const columns: ColumnsType<IArticleItem> = [
   {
     title: "#",
     dataIndex: "id",
@@ -133,6 +134,7 @@ const Article = connectArticleIndex(({ articles, getArticles }: TArticleProps) =
       bordered={true}
       loading={isLoading}
       dataSource={articles}
+      rowKey={"id"}
       columns={columns}
       rowSelection={{
         type: "checkbox",
@@ -140,7 +142,9 @@ const Article = connectArticleIndex(({ articles, getArticles }: TArticleProps) =
           console.log(selectedRowKeys, selectedRows)
         }
       }}
-      pagination={{ position: ["bottomCenter"] }}
+      pagination={{
+        position: ["bottomCenter"],
+      }}
     />
   )
 })
