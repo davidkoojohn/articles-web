@@ -1,10 +1,6 @@
-export const GET_ARTICLES = "GET_ARTICLES"
-export const GET_ARTICLE = "GET_ARTICLE"
-export const ADD_ARTICLE = "ADD_ARTICLE"
-export const UPDATE_ARTICLE = "UPDATE_ARTICLE"
-export const DELETE_ARTICLE = "DELETE_ARTICLE"
+export const SET_ARTICLES = "SET_ARTICLES"
 
-export interface IArticle {
+export interface IArticleItem {
   id: string
   title: string
   tags: string[]
@@ -12,3 +8,9 @@ export interface IArticle {
   created_at: string
 }
 
+interface IRequestArticles {
+  type: typeof SET_ARTICLES
+  items: IArticleItem[]
+}
+
+export type IArticleActionsTypes = IRequestArticles

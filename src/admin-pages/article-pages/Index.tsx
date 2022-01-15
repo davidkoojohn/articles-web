@@ -1,18 +1,17 @@
-import { useState, Key } from "react";
-import {Link, useNavigate} from "react-router-dom"
-import { Table, Space, Button, Tag, TableColumnsType } from "antd"
+import { useState, Key, useEffect } from "react";
+import { Link } from "react-router-dom"
+import { Table, Space, Button, Tag, TableColumnsType, message } from "antd"
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons"
 import "./Article.less"
 import { connect, ConnectedProps } from "react-redux"
 import { RootState } from "../../reducers"
-import { IArticle } from "../../types/articleTypes"
-
+import { IArticleItem } from "../../types/articleTypes"
+import * as articleActions from "../../actions/articleActions"
 
 interface IOperationProps {
   id: string
 }
 function Operation({ id }: IOperationProps) {
-  const navigate = useNavigate()
   return (
     <Space size="middle">
       <Link to={`/admin/article/${id}`}>
@@ -36,14 +35,14 @@ function Operation({ id }: IOperationProps) {
   )
 }
 
-const columns: TableColumnsType<IArticle> = [
+const columns: TableColumnsType<IArticleItem> = [
   {
     title: "#",
     dataIndex: "id",
     key: "id",
     align: "center",
     className: "gray",
-    width: 100
+    width: 80
   },
   {
     title: "标题",
@@ -88,7 +87,7 @@ const columns: TableColumnsType<IArticle> = [
     title: '操作',
     key: 'action',
     width: 130,
-    render: (row: IArticle) => {
+    render: (row: IArticleItem) => {
       return (
         <Operation id={row.id}/>
       )
@@ -98,27 +97,46 @@ const columns: TableColumnsType<IArticle> = [
 
 const connectArticleIndex = connect(
   (state: RootState) => {
-    const { articles } = state.articleReducer
-    return { articles }
+    const { articleList } = state.articleReducer
+    return { articles: articleList }
   },
+  (dispatch, ownProps) => {
+    return {
+      getArticles: () => dispatch<any>(articleActions.getArticles())
+    }
+  }
 )
 type TArticlePropsFromRedux = ConnectedProps<typeof connectArticleIndex>
 type TArticleProps = TArticlePropsFromRedux & {
 
 }
-const Article = connectArticleIndex(({ articles }: TArticleProps) => {
+const Article = connectArticleIndex(({ articles, getArticles }: TArticleProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const dataSource = articles.map((item: IArticle) => ({ ...item, key: item.id }))
+
+  const init = async () => {
+    try {
+      setIsLoading(true)
+      await getArticles()
+    } catch (e) {
+      message.error("网络错误，请刷新重试！");
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    init()
+  }, [])
 
   return (
     <Table
       bordered={true}
       loading={isLoading}
-      dataSource={dataSource}
+      dataSource={articles}
       columns={columns}
       rowSelection={{
         type: "checkbox",
-        onChange: (selectedRowKeys: Key[], selectedRows: IArticle[]) => {
+        onChange: (selectedRowKeys: Key[], selectedRows: IArticleItem[]) => {
           console.log(selectedRowKeys, selectedRows)
         }
       }}
