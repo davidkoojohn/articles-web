@@ -1,6 +1,7 @@
 import { Form, Input, Button, Space, Upload, message } from "antd"
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from "react";
+import { EditableTagGroup } from "./components/EditableTagGroup"
 
 function getBase64(img: any, callback: any) {
   const reader = new FileReader();
@@ -12,6 +13,7 @@ export default function ArticleCreate() {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState<string>("")
+  const [tags, setTags] = useState<string[]>([])
 
   const beforeUpload = (file: File) => {
     setLoading(true)
@@ -102,6 +104,12 @@ export default function ArticleCreate() {
                 : uploadButton}
             </Upload>
           </div>
+        </Form.Item>
+        <Form.Item
+          name="tags"
+          label="标签"
+        >
+          <EditableTagGroup onChange={(tagList) => setTags(tagList)}/>
         </Form.Item>
         <Form.Item>
           <Space>
