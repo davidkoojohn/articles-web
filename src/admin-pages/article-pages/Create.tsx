@@ -6,12 +6,16 @@ import { UploadPoster } from "./components/UploadPoster"
 export default function ArticleCreate() {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState<boolean>(false)
-  const [tags, setTags] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>(["固定不能删", "你大爷"])
   const [imageUrl, setImageUrl] = useState<string>("")
 
   useEffect(() => {
     console.log(imageUrl)
   }, [imageUrl])
+
+  useEffect(() => {
+    console.log(tags)
+  }, [tags])
 
   const onFinish = () => {
     message.success('Submit success!');
@@ -62,7 +66,10 @@ export default function ArticleCreate() {
           name="tags"
           label="标签"
         >
-          <EditableTagGroup onChange={(tagList) => setTags(tagList)}/>
+          <EditableTagGroup
+            onChange={(tagList) => setTags(tagList)}
+            tags={tags}
+          />
         </Form.Item>
         <Form.Item>
           <Space>

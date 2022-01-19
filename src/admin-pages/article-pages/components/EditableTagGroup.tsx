@@ -1,30 +1,26 @@
 import { Input, Tag, Tooltip } from "antd"
 import { PlusOutlined } from "@ant-design/icons"
-import {useEffect, useState} from "react";
+import { useState, useRef } from "react";
 
 interface IEditableTagGroupProps {
   onChange: (tagList: string[]) => void
+  tags: string[]
 }
 
-export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
-  const [tags, setTags] = useState<string[]>(['Unremovable', 'Tag 2', 'Tag 3'])
+export function EditableTagGroup({ onChange, tags }: IEditableTagGroupProps) {
   const [inputVisible, setInputVisible] = useState<boolean>(false)
   const [inputValue, setInputValue] = useState<string>("")
   const [editInputIndex, setEditInputIndex] = useState<number>(-1)
   const [editInputValue, setEditInputValue] = useState<string>("")
-  const [input] = useState()
-  const [editInput] = useState()
-
-  useEffect(() => {
-    onChange(tags)
-  }, [tags])
+  const enterInputRef = useRef<any>(null)
+  const editInputRef = useRef<any>(null)
 
   const handleInputConfirm = () => {
     let tagsTemp = tags
     if (inputValue && !tags.includes(inputValue)) {
       tagsTemp = [...tags, inputValue]
     }
-    setTags(tagsTemp)
+    onChange(tagsTemp)
     setInputVisible(false)
     setInputValue("")
   };
@@ -32,8 +28,7 @@ export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
   const handleEditInputConfirm = () => {
     const newTags = [...tags];
     newTags[editInputIndex] = editInputValue;
-
-    setTags(newTags)
+    onChange(newTags)
     setEditInputIndex(-1)
     setEditInputValue("")
   };
@@ -44,7 +39,7 @@ export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
         if (editInputIndex === index) {
           return (
             <Input
-              ref={editInput}
+              ref={editInputRef}
               key={tag}
               size="small"
               style={{ width: "78px", marginRight: "8px", verticalAlign: "top" }}
@@ -63,16 +58,19 @@ export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
             key={tag}
             closable={index !== 0}
             onClose={
-              () => setTags(tags.filter(item => item !== tag))
+              () => onChange(tags.filter(item => item !== tag))
             }
           >
             <span
               onDoubleClick={
                 (e) => {
                   if (index !== 0) {
+                    e.preventDefault();
                     setEditInputIndex(index)
                     setEditInputValue(tag)
-                    e.preventDefault();
+                    setTimeout(() => {
+                      editInputRef.current.focus()
+                    }, 0)
                   }
                 }
               }
@@ -93,7 +91,7 @@ export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
       {inputVisible
         ? (
           <Input
-            ref={input}
+            ref={enterInputRef}
             type="text"
             size="small"
             style={{ width: "78px", marginRight: "8px", verticalAlign: "top" }}
@@ -106,7 +104,14 @@ export function EditableTagGroup({ onChange }: IEditableTagGroupProps) {
         : (
           <Tag
             style={{ backgroundColor: "#fff", borderStyle: "dashed" }}
-            onClick={() => setInputVisible(true)}
+            onClick={
+              () => {
+                setInputVisible(true)
+                setTimeout(() => {
+                  enterInputRef.current.focus()
+                }, 0)
+              }
+            }
           >
             <PlusOutlined /> New Tag
           </Tag>
